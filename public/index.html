@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki Tech Local</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="/vendor/marked/marked.umd.js"></script>
+  <script src="/vendor/dompurify/purify.min.js"></script>
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+
+  <main class="layout">
+    <aside class="panel notes-panel">
+      <div class="panel-head">
+        <h1>Wiki Tech</h1>
+        <button id="newNoteBtn" class="btn btn-primary">+ Nueva nota</button>
+      </div>
+
+      <input id="searchInput" type="text" placeholder="Buscar nota..." class="search" />
+      <ul id="notesList" class="notes-list"></ul>
+    </aside>
+
+    <section class="panel editor-panel">
+      <div class="editor-toolbar">
+        <input id="titleInput" type="text" placeholder="Titulo de la nota" class="title-input" />
+        <div class="toolbar-actions">
+          <button id="saveBtn" class="btn btn-primary">Guardar</button>
+          <button id="deleteBtn" class="btn btn-danger">Eliminar</button>
+          <label class="btn btn-secondary file-label" for="imageInput">Subir imagen</label>
+          <input id="imageInput" type="file" accept="image/*" hidden />
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <textarea id="contentInput" class="editor" placeholder="# Tu nota tecnica\n\n- Escribe en Markdown\n- Agrega enlaces: [API auth](wiki://api-auth)\n- Inserta imagenes"></textarea>
+        <article id="preview" class="preview"></article>
+      </div>
+
+      <section id="backlinksWrap" class="backlinks" hidden>
+        <h2>Referencias a esta nota</h2>
+        <ul id="backlinksList" class="backlinks-list"></ul>
+      </section>
+
+      <p id="status" class="status">Sin cambios.</p>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

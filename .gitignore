@@ -1,0 +1,5 @@
+node_modules/
+data/notes/
+data/assets/
+.DS_Store
+Thumbs.db
