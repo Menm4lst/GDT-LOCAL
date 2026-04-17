@@ -5,6 +5,9 @@ const previewEl = document.getElementById("preview");
 const statusEl = document.getElementById("status");
 const searchInput = document.getElementById("searchInput");
 const imageInput = document.getElementById("imageInput");
+const notesMetaEl = document.getElementById("notesMeta");
+const wordCountEl = document.getElementById("wordCount");
+const emptyStateEl = document.getElementById("emptyState");
 const backlinksWrapEl = document.getElementById("backlinksWrap");
 const backlinksListEl = document.getElementById("backlinksList");
 
@@ -53,6 +56,21 @@ function renderPreview() {
   });
 
   previewEl.innerHTML = sanitizedHtml;
+  updateWordCount();
+}
+
+function updateWordCount() {
+  if (!wordCountEl) return;
+  const text = contentInput.value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  wordCountEl.textContent = `${words} ${words === 1 ? "palabra" : "palabras"}`;
+}
+
+function updateEmptyState() {
+  if (!emptyStateEl) return;
+  const hasNotes = state.notes.length > 0;
+  emptyStateEl.hidden = hasNotes;
+  notesListEl.hidden = !hasNotes;
 }
 
 function formatDate(value) {
@@ -67,10 +85,10 @@ function formatDate(value) {
 
 function renderNotesList() {
   notesListEl.innerHTML = state.notes
-    .map((note) => {
+    .map((note, index) => {
       const activeClass = note.id === state.selectedId ? "active" : "";
       return `
-        <li>
+        <li style="--item-index:${index};">
           <button class="note-item ${activeClass}" data-id="${escapeHtml(note.id)}">
             <span class="note-title">${escapeHtml(note.title)}</span>
             <span class="note-excerpt">${escapeHtml(note.excerpt || "")}</span>
@@ -148,11 +166,17 @@ async function loadNotes(query = getSearchQuery()) {
   const notes = await requestJson(url);
   state.notes = notes;
 
+  if (notesMetaEl) {
+    const count = state.notes.length;
+    notesMetaEl.textContent = `${count} ${count === 1 ? "nota" : "notas"}`;
+  }
+
   if (state.selectedId && !state.notes.some((note) => note.id === state.selectedId)) {
     state.selectedId = null;
   }
 
   renderNotesList();
+  updateEmptyState();
 }
 
 async function confirmDiscardIfDirty() {
@@ -360,6 +384,22 @@ contentInput.addEventListener("input", () => {
   setStatus("Tienes cambios sin guardar.");
 });
 
+contentInput.addEventListener("paste", (event) => {
+  const items = event.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.startsWith("image/")) {
+      event.preventDefault();
+      const file = item.getAsFile();
+      if (!file) return;
+      setStatus("Subiendo imagen pegada...");
+      uploadImage(file).catch((e) => alert(e.message));
+      return;
+    }
+  }
+});
+
 titleInput.addEventListener("input", () => {
   setDirty(true);
   setStatus("Tienes cambios sin guardar.");
@@ -433,6 +473,18 @@ window.addEventListener("beforeunload", (event) => {
 
   event.preventDefault();
   event.returnValue = "";
+});
+
+document.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+    event.preventDefault();
+    saveNote().catch((e) => alert(e.message));
+  }
+
+  if ((event.ctrlKey || event.metaKey) && event.key === "n") {
+    event.preventDefault();
+    clearForNewNote({ markDirty: false }).catch((e) => alert(e.message));
+  }
 });
 
 setInterval(() => {

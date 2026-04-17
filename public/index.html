@@ -9,42 +9,95 @@
   <script src="/vendor/dompurify/purify.min.js"></script>
 </head>
 <body>
-  <div class="bg-shape bg-shape-a"></div>
-  <div class="bg-shape bg-shape-b"></div>
+  <div class="bg-noise"></div>
 
   <main class="layout">
-    <aside class="panel notes-panel">
-      <div class="panel-head">
-        <h1>Wiki Tech</h1>
-        <button id="newNoteBtn" class="btn btn-primary">+ Nueva nota</button>
+    <aside class="panel sidebar">
+      <div class="sidebar-head">
+        <div class="brand">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>
+          <div>
+            <h1>Wiki Tech</h1>
+            <span class="brand-sub">Base de conocimiento local</span>
+          </div>
+        </div>
+        <button id="newNoteBtn" class="btn btn-accent" title="Nueva nota (Ctrl+N)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Nueva</span>
+        </button>
       </div>
 
-      <input id="searchInput" type="text" placeholder="Buscar nota..." class="search" />
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" type="text" placeholder="Buscar notas..." class="search" />
+      </div>
+
+      <div class="sidebar-meta">
+        <span id="notesMeta" class="notes-count">0 notas</span>
+      </div>
+
+      <div id="emptyState" class="empty-state" hidden>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        <p>Sin notas aun</p>
+        <span>Crea tu primera nota para comenzar</span>
+      </div>
+
       <ul id="notesList" class="notes-list"></ul>
     </aside>
 
     <section class="panel editor-panel">
       <div class="editor-toolbar">
-        <input id="titleInput" type="text" placeholder="Titulo de la nota" class="title-input" />
+        <input id="titleInput" type="text" placeholder="Titulo de la nota..." class="title-input" />
         <div class="toolbar-actions">
-          <button id="saveBtn" class="btn btn-primary">Guardar</button>
-          <button id="deleteBtn" class="btn btn-danger">Eliminar</button>
-          <label class="btn btn-secondary file-label" for="imageInput">Subir imagen</label>
+          <button id="saveBtn" class="btn btn-accent" title="Guardar (Ctrl+S)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>Guardar</span>
+          </button>
+          <button id="deleteBtn" class="btn btn-danger" title="Eliminar nota">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Eliminar</span>
+          </button>
+          <label class="btn btn-ghost file-label" for="imageInput" title="Subir imagen">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Imagen</span>
+          </label>
           <input id="imageInput" type="file" accept="image/*" hidden />
         </div>
       </div>
 
+      <div class="editor-labels">
+        <span class="editor-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Markdown
+        </span>
+        <span class="editor-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Vista previa
+        </span>
+      </div>
+
       <div class="editor-grid">
-        <textarea id="contentInput" class="editor" placeholder="# Tu nota tecnica\n\n- Escribe en Markdown\n- Agrega enlaces: [API auth](wiki://api-auth)\n- Inserta imagenes"></textarea>
+        <textarea id="contentInput" class="editor" placeholder="# Tu nota tecnica&#10;&#10;- Escribe en Markdown&#10;- Agrega enlaces: [API auth](wiki://api-auth)&#10;- Inserta imagenes"></textarea>
         <article id="preview" class="preview"></article>
       </div>
 
       <section id="backlinksWrap" class="backlinks" hidden>
-        <h2>Referencias a esta nota</h2>
+        <h3 class="backlinks-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Referencias a esta nota
+        </h3>
         <ul id="backlinksList" class="backlinks-list"></ul>
       </section>
 
-      <p id="status" class="status">Sin cambios.</p>
+      <footer class="statusbar">
+        <div class="statusbar-left">
+          <span id="status" class="status-text">Sin cambios</span>
+        </div>
+        <div class="statusbar-right">
+          <span id="wordCount" class="status-text">0 palabras</span>
+          <span class="status-text kbd-hint">Ctrl+S guardar &middot; Ctrl+N nueva</span>
+        </div>
+      </footer>
     </section>
   </main>
 
